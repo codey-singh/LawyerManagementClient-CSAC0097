@@ -34,7 +34,8 @@ const TheContent = () => {
                 )
               );
             })}
-            <Redirect from="/" to="/welcome" />
+            <Redirect exact from="/" to="/welcome" />
+            <Redirect from="*" to="/404" />
           </Switch>
         </Suspense>
       </CContainer>
