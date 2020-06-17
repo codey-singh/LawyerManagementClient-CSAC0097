@@ -11,6 +11,7 @@ import {
   CSelect,
   CCardFooter,
   CButton,
+  CAlert,
 } from "@coreui/react";
 import { CIcon } from "@coreui/icons-react";
 function Profile() {
@@ -76,7 +77,16 @@ function Profile() {
         </CCard>
       </CCol>
       <CCol md={4}>
-        <CCard></CCard>
+        <CCard>
+          <CCardBody className="text-center">
+            <CAlert color="success">Accepted</CAlert>
+            <CAlert color="danger">Declined</CAlert>
+            <CAlert color="warning">Pending</CAlert>
+            <CButton type="button" size="md" color="success">
+              Request Elevated Access
+            </CButton>
+          </CCardBody>
+        </CCard>
       </CCol>
     </CRow>
   );
