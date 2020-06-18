@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import {
@@ -14,8 +14,11 @@ import {
   CInputGroupText,
   CRow,
   CInvalidFeedback,
+  CAlert,
+  CLink,
 } from "@coreui/react";
 import CIcon from "@coreui/icons-react";
+import axios from "../../../_shared/services/Axios";
 
 const initialValues = {
   email: "",
@@ -24,10 +27,6 @@ const initialValues = {
   firstname: "",
   lastname: "",
   dob: "",
-};
-
-const onSubmit = (values) => {
-  console.log(values);
 };
 
 const validationSchema = yup.object({
@@ -48,6 +47,19 @@ const validationSchema = yup.object({
 });
 
 const Register = () => {
+  const [registered, setRegistered] = useState(false);
+
+  const onSubmit = (values) => {
+    axios
+      .post("/auth/register", values)
+      .then((data) => {
+        setRegistered(true);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   const formik = useFormik({
     initialValues,
     onSubmit,
@@ -61,6 +73,12 @@ const Register = () => {
           <CCol md="9" lg="7" xl="6">
             <CCard className="mx-4">
               <CCardBody className="p-4">
+                {registered ? (
+                  <CAlert color="success">
+                    Registered Successfully{" "}
+                    <CLink to="/login">Go to Login page</CLink>
+                  </CAlert>
+                ) : null}
                 <CForm onSubmit={formik.handleSubmit}>
                   <h1>Register</h1>
                   <p className="text-muted">Create your account</p>

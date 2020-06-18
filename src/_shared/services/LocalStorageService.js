@@ -13,6 +13,7 @@ const LocalStorageService = (function () {
     localStorage.setItem("name", tokenObj.name);
     localStorage.setItem("email", tokenObj.email);
     localStorage.setItem("user_id", tokenObj.user_id);
+    localStorage.setItem("role", tokenObj.role);
   }
   function _getAccessToken() {
     return localStorage.getItem("accessToken");
