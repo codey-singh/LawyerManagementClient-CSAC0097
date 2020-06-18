@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { HashRouter, Route, Switch } from "react-router-dom";
 import "./scss/style.scss";
+import TheProtectedRoute from "./containers/TheProtectedRoute";
 
 const loading = (
   <div className="pt-3 text-center">
@@ -47,11 +48,7 @@ class App extends Component {
               name="Page 500"
               render={(props) => <Page500 {...props} />}
             />
-            <Route
-              path="/"
-              name="Home"
-              render={(props) => <TheLayout {...props} />}
-            />
+            <TheProtectedRoute path="/" name="Home" component={TheLayout} />
           </Switch>
         </React.Suspense>
       </HashRouter>
