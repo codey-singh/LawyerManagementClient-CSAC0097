@@ -77,7 +77,7 @@ const Login = () => {
                         onBlur={formik.handleBlur}
                         invalid={!!formik.errors.username}
                       />
-                      {formik.errors.username ? (
+                      {formik.touched.username && formik.errors.username ? (
                         <CInvalidFeedback>
                           {formik.errors.username}
                         </CInvalidFeedback>
@@ -99,7 +99,7 @@ const Login = () => {
                         onChange={formik.handleChange}
                         invalid={!!formik.errors.password}
                       />
-                      {formik.errors.username ? (
+                      {formik.touched.password && formik.errors.password ? (
                         <CInvalidFeedback>
                           {formik.errors.password}
                         </CInvalidFeedback>
@@ -107,7 +107,12 @@ const Login = () => {
                     </CInputGroup>
                     <CRow>
                       <CCol xs="6">
-                        <CButton type="submit" color="primary" className="px-4">
+                        <CButton
+                          type="submit"
+                          color="primary"
+                          className="px-4"
+                          disabled={Object.keys(formik.errors).length > 0}
+                        >
                           Login
                         </CButton>
                       </CCol>
