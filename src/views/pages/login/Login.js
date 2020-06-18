@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { useFormik } from "formik";
 import {
   CButton,
   CCard,
@@ -13,19 +13,52 @@ import {
   CInputGroupPrepend,
   CInputGroupText,
   CRow,
+  CInvalidFeedback,
+  CLink,
 } from "@coreui/react";
 import CIcon from "@coreui/icons-react";
 
+const initialValues = {
+  username: "",
+  password: "",
+};
+
+const onSubmit = (values) => {
+  console.log(values);
+};
+
+const validate = (values) => {
+  let errors = {};
+
+  if (!values.username) {
+    errors.username = "Username Required";
+  } else if (
+    !/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,4})+$/.test(values.username)
+  ) {
+    errors.username = "Username should be a valid email";
+  }
+  if (!values.password) {
+    errors.password = "Password Required";
+  }
+  console.log(errors);
+  return errors;
+};
+
 const Login = () => {
+  const formik = useFormik({
+    initialValues,
+    onSubmit,
+    validate,
+  });
   return (
     <div className="c-app c-default-layout flex-row align-items-center">
       <CContainer>
         <CRow className="justify-content-center">
-          <CCol md="8">
+          <CCol md="6">
             <CCardGroup>
               <CCard className="p-4">
                 <CCardBody>
-                  <CForm>
+                  <CForm onSubmit={formik.handleSubmit}>
                     <h1>Login</h1>
                     <p className="text-muted">Sign In to your account</p>
                     <CInputGroup className="mb-3">
@@ -38,7 +71,17 @@ const Login = () => {
                         type="text"
                         placeholder="Username"
                         autoComplete="username"
+                        name="username"
+                        value={formik.values.username}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        invalid={!!formik.errors.username}
                       />
+                      {formik.errors.username ? (
+                        <CInvalidFeedback>
+                          {formik.errors.username}
+                        </CInvalidFeedback>
+                      ) : null}
                     </CInputGroup>
                     <CInputGroup className="mb-4">
                       <CInputGroupPrepend>
@@ -49,47 +92,34 @@ const Login = () => {
                       <CInput
                         type="password"
                         placeholder="Password"
+                        name="password"
                         autoComplete="current-password"
+                        value={formik.values.password}
+                        onBlur={formik.handleBlur}
+                        onChange={formik.handleChange}
+                        invalid={!!formik.errors.password}
                       />
+                      {formik.errors.username ? (
+                        <CInvalidFeedback>
+                          {formik.errors.password}
+                        </CInvalidFeedback>
+                      ) : null}
                     </CInputGroup>
                     <CRow>
                       <CCol xs="6">
-                        <CButton color="primary" className="px-4">
+                        <CButton type="submit" color="primary" className="px-4">
                           Login
                         </CButton>
                       </CCol>
                       <CCol xs="6" className="text-right">
-                        <CButton color="link" className="px-0">
-                          Forgot password?
-                        </CButton>
+                        <CLink to="/register">
+                          <CButton color="link" className="px-0">
+                            Create Account
+                          </CButton>
+                        </CLink>
                       </CCol>
                     </CRow>
                   </CForm>
-                </CCardBody>
-              </CCard>
-              <CCard
-                className="text-white bg-primary py-5 d-md-down-none"
-                style={{ width: "44%" }}
-              >
-                <CCardBody className="text-center">
-                  <div>
-                    <h2>Sign up</h2>
-                    <p>
-                      Lorem ipsum dolor sit amet, consectetur adipisicing elit,
-                      sed do eiusmod tempor incididunt ut labore et dolore magna
-                      aliqua.
-                    </p>
-                    <Link to="/register">
-                      <CButton
-                        color="primary"
-                        className="mt-3"
-                        active
-                        tabIndex={-1}
-                      >
-                        Register Now!
-                      </CButton>
-                    </Link>
-                  </div>
                 </CCardBody>
               </CCard>
             </CCardGroup>

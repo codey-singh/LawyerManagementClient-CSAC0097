@@ -7,7 +7,6 @@ axios.defaults.baseURL =
 axios.interceptors.request.use(
   (config) => {
     const token = localStorageService.getAccessToken();
-    console.log("hello");
     if (token) {
       config.headers["Authorization"] = "Bearer " + token;
     }

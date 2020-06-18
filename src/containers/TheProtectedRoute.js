@@ -1,16 +1,13 @@
 import React from "react";
 import { Route, Redirect } from "react-router-dom";
-
-const fakeAuth = {
-  isAuthenticated: true,
-};
+import AuthenticationService from "../_shared/services/AuthenticationService";
 
 function TheProtectedRoute({ component: Component, ...rest }) {
   return (
     <Route
       {...rest}
       render={(props) =>
-        fakeAuth.isAuthenticated ? (
+        AuthenticationService.isAuthenticated() ? (
           <Component {...props} />
         ) : (
           <Redirect to="/login" />
