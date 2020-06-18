@@ -18,11 +18,21 @@ const LocalStorageService = (function () {
     return localStorage.getItem("accessToken");
   }
 
+  function _getValue(key) {
+    return localStorage.getItem(key);
+  }
+
+  function _clearStorage() {
+    localStorage.clear();
+  }
+
   function _clearToken() {
     localStorage.removeItem("accessToken");
   }
   return {
+    clearStorage: _clearStorage,
     getService: _getService,
+    getValue: _getValue,
     setToken: _setToken,
     getAccessToken: _getAccessToken,
     clearToken: _clearToken,

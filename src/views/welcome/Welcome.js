@@ -1,7 +1,11 @@
 import React from "react";
 
+import LocalStorageService from "../../_shared/services/LocalStorageService";
+
 function Welcome() {
-  return <h1>Welcome</h1>;
+  const name = LocalStorageService.getValue("name");
+
+  return <h1>Welcome, {name}</h1>;
 }
 
 export default Welcome;
