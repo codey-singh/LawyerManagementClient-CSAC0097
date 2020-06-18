@@ -1,5 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { useFormik } from "formik";
+import * as yup from "yup";
+import AuthenticationService from "../../../_shared/services/AuthenticationService";
+import LocalStorageService from "../../../_shared/services/LocalStorageService";
+
+import axios from "../../../_shared/services/Axios";
 import {
   CButton,
   CCard,
@@ -17,40 +22,48 @@ import {
   CLink,
 } from "@coreui/react";
 import CIcon from "@coreui/icons-react";
+import { Redirect } from "react-router-dom";
 
 const initialValues = {
   username: "",
   password: "",
 };
 
-const onSubmit = (values) => {
-  console.log(values);
-};
-
-const validate = (values) => {
-  let errors = {};
-
-  if (!values.username) {
-    errors.username = "Username Required";
-  } else if (
-    !/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,4})+$/.test(values.username)
-  ) {
-    errors.username = "Username should be a valid email";
-  }
-  if (!values.password) {
-    errors.password = "Password Required";
-  }
-  console.log(errors);
-  return errors;
-};
+const validationSchema = yup.object({
+  username: yup
+    .string()
+    .required("Username is required")
+    .email("Username should be a valid email"),
+  password: yup.string().required("Password is required"),
+});
 
 const Login = () => {
+  const onSubmit = (values) => {
+    axios
+      .post("/auth/login", values)
+      .then((data) => {
+        console.log(data.data);
+        LocalStorageService.setToken(data.data);
+        setAuthenticated(true);
+      })
+      .catch((error) => {
+        setAuthenticated(false);
+      });
+  };
+
   const formik = useFormik({
     initialValues,
     onSubmit,
-    validate,
+    validationSchema,
   });
-  return (
+
+  const [isAuthenticated, setAuthenticated] = useState(
+    AuthenticationService.isAuthenticated()
+  );
+
+  return isAuthenticated ? (
+    <Redirect to="/welcome" />
+  ) : (
     <div className="c-app c-default-layout flex-row align-items-center">
       <CContainer>
         <CRow className="justify-content-center">
@@ -111,7 +124,7 @@ const Login = () => {
                           type="submit"
                           color="primary"
                           className="px-4"
-                          disabled={Object.keys(formik.errors).length > 0}
+                          disabled={!formik.isValid}
                         >
                           Login
                         </CButton>

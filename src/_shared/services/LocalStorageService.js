@@ -9,14 +9,17 @@ const LocalStorageService = (function () {
     return _service;
   }
   function _setToken(tokenObj) {
-    localStorage.setItem("access_token", tokenObj.access_token);
+    localStorage.setItem("accessToken", tokenObj.accessToken);
+    localStorage.setItem("name", tokenObj.name);
+    localStorage.setItem("email", tokenObj.email);
+    localStorage.setItem("user_id", tokenObj.user_id);
   }
   function _getAccessToken() {
-    return localStorage.getItem("access_token");
+    return localStorage.getItem("accessToken");
   }
 
   function _clearToken() {
-    localStorage.removeItem("access_token");
+    localStorage.removeItem("accessToken");
   }
   return {
     getService: _getService,
