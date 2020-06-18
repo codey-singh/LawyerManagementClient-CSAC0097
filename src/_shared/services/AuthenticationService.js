@@ -13,7 +13,13 @@ const AuthenticationService = (function () {
   function _isAuthenticated() {
     return !!LocalStorageService.getAccessToken();
   }
+
+  function _getRole() {
+    return LocalStorageService.getValue("role");
+  }
+
   return {
+    getRole: _getRole,
     getService: _getService,
     isAuthenticated: _isAuthenticated,
   };
