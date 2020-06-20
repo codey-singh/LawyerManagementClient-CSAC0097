@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   CRow,
   CCard,
@@ -6,210 +6,172 @@ import {
   CCardHeader,
   CCol,
   CFormGroup,
-  CInput,
-  CLabel,
-  CSelect,
   CCardFooter,
   CButton,
   CAlert,
-  CInvalidFeedback,
-  CForm,
 } from "@coreui/react";
-import { CIcon } from "@coreui/icons-react";
-import { useFormik } from "formik";
+import { Formik, Form } from "formik";
 import * as yup from "yup";
 import axios from "../../_shared/services/Axios";
+import AuthenticationService from "../../_shared/services/AuthenticationService";
+import CustomInput from "../../_shared/components/CustomInput";
+import CustomSelect from "../../_shared/components/CustomSelect";
 
 const validationSchema = yup.object({
   email: yup
     .string()
     .required("Email id is required")
     .email("Invalid email address"),
-  password: yup.string().required("Password is required").min(6),
-  repeatPassword: yup
-    .string()
-    .required("Confirm Password is required")
-    .test("passwords-match", "Passwords must match.", function (value) {
-      return this.parent.password === value;
-    }),
   firstname: yup.string().required("Firstname is required"),
   lastname: yup.string().required("Lastname is required"),
   dob: yup.date("Not a valid date").required("DOB is required"),
-  phonenumber: yup.string().notRequired().max(10),
+  phonenumber: yup.string().required().max(10),
+  department_id: yup.string().notRequired().nullable(),
+  role_id: yup.string().notRequired(),
 });
 
+const init = {
+  email: "",
+  firstname: "",
+  lastname: "",
+  dob: "",
+  phonenumber: "",
+  department_id: "",
+  role_id: "",
+};
+
 function Profile() {
-  const initialValues = {
-    email: "",
-    password: "",
-    repeatPassword: "",
-    firstname: "",
-    lastname: "",
-    phonenumber: "",
-  };
+  const [initialValues, setInitialValues] = useState(init);
+  const [departments, setdepartments] = useState([]);
+  const [roles, setroles] = useState([]);
+  const Role = AuthenticationService.getRole();
 
-  const onSubmit = (values) => {
-    axios
-      .patch("/profile", values)
-      .then((data) => {})
-      .catch((error) => {
-        console.log(error);
-      });
-  };
+  useEffect(() => {
+    axios.get("/departments").then((data) => {
+      setdepartments(data.data);
+    });
 
-  const formik = useFormik({
-    initialValues,
-    onSubmit,
-    validationSchema,
-  });
+    axios.get("/roles").then((data) => {
+      setroles(data.data);
+    });
+
+    axios.get("/profile").then((data) => {
+      console.log(data);
+      let dataProfile = {
+        email: "",
+        firstname: "",
+        lastname: "",
+        dob: "",
+        phonenumber: "",
+        department_id: "",
+        role_id: "",
+        ...data.data,
+      };
+      setInitialValues(dataProfile);
+    });
+  }, []);
 
   return (
     <CRow>
       <CCol md={8}>
         <CCard>
-          <CForm onSubmit={formik.handleSubmit}>
-            <CCardHeader>Profile</CCardHeader>
-            <CCardBody>
-              <CFormGroup>
-                <CLabel htmlFor="email">Email Address</CLabel>
-                <CInput
-                  type="text"
-                  placeholder="Email"
-                  autoComplete="email"
-                  name="email"
-                  {...formik.getFieldProps("email")}
-                  invalid={formik.touched.email && !!formik.errors.email}
-                />
-                {formik.touched.email && formik.errors.email ? (
-                  <CInvalidFeedback>{formik.errors.email}</CInvalidFeedback>
-                ) : null}
-              </CFormGroup>
-              <CFormGroup>
-                <CLabel htmlFor="password">Password</CLabel>
-                <CInput
-                  type="password"
-                  placeholder="Password"
-                  autoComplete="new-password"
-                  name="password"
-                  {...formik.getFieldProps("password")}
-                  invalid={formik.touched.password && !!formik.errors.password}
-                />
-                {formik.touched.password && formik.errors.password ? (
-                  <CInvalidFeedback>{formik.errors.password}</CInvalidFeedback>
-                ) : null}
-              </CFormGroup>
-              <CFormGroup>
-                <CLabel htmlFor="repeatPassword">Password</CLabel>
-                <CInput
-                  type="password"
-                  placeholder="Repeat password"
-                  autoComplete="new-password"
-                  name="repeatPassword"
-                  {...formik.getFieldProps("repeatPassword")}
-                  invalid={
-                    formik.touched.repeatPassword &&
-                    !!formik.errors.repeatPassword
-                  }
-                />
-                {formik.touched.repeatPassword &&
-                formik.errors.repeatPassword ? (
-                  <CInvalidFeedback>
-                    {formik.errors.repeatPassword}
-                  </CInvalidFeedback>
-                ) : null}
-              </CFormGroup>
-              <CFormGroup>
-                <CLabel htmlFor="firstname">Firstname</CLabel>
-                <CInput
-                  type="text"
-                  placeholder="First Name"
-                  autoComplete="firstname"
-                  name="firstname"
-                  {...formik.getFieldProps("firstname")}
-                  invalid={
-                    formik.touched.firstname && !!formik.errors.firstname
-                  }
-                />
-                {formik.touched.firstname && formik.errors.firstname ? (
-                  <CInvalidFeedback>{formik.errors.firstname}</CInvalidFeedback>
-                ) : null}
-              </CFormGroup>
-              <CFormGroup>
-                <CLabel htmlFor="lastname">Lastname</CLabel>
-                <CInput
-                  type="text"
-                  placeholder="Last Name"
-                  autoComplete="lastname"
-                  name="lastname"
-                  {...formik.getFieldProps("lastname")}
-                  invalid={formik.touched.lastname && !!formik.errors.lastname}
-                />
-                {formik.touched.lastname && formik.errors.lastname ? (
-                  <CInvalidFeedback>{formik.errors.lastname}</CInvalidFeedback>
-                ) : null}
-              </CFormGroup>
-              <CFormGroup>
-                <CLabel htmlFor="accessType">Access Type</CLabel>
-                <CSelect custom name="accessType" id="accessType">
-                  <option value="null">Choose an access type</option>
-                  <option value="1">Lawyer</option>
-                  <option value="2">Manager</option>
-                </CSelect>
-              </CFormGroup>
-              <CFormGroup>
-                <CLabel htmlFor="phonenumber">Phone Number</CLabel>
-                <CInput
-                  type="text"
-                  placeholder="Phone Number"
-                  autoComplete="phonenumber"
-                  name="phonenumber"
-                  {...formik.getFieldProps("phonenumber")}
-                  invalid={
-                    formik.touched.phonenumber && !!formik.errors.phonenumber
-                  }
-                />
-                {formik.touched.phonenumber && formik.errors.phonenumber ? (
-                  <CInvalidFeedback>
-                    {formik.errors.phonenumber}
-                  </CInvalidFeedback>
-                ) : null}
-              </CFormGroup>
-              <CFormGroup>
-                <CLabel htmlFor="department">Department</CLabel>
-                <CSelect custom name="department" id="department">
-                  <option value="null">Choose a department</option>
-                  <option value="1">Immigration</option>
-                  <option value="2">Traffic Tickets</option>
-                  <option value="3">Technology</option>
-                  <option value="4">Criminal Law</option>
-                  <option value="5">Corporate Law</option>
-                </CSelect>
-              </CFormGroup>
-            </CCardBody>
-            <CCardFooter>
-              <CButton type="submit" size="md" color="success">
-                <CIcon name="cil-scrubber" /> Submit
-              </CButton>
-              &nbsp;
-              <CButton type="reset" size="md" color="danger">
-                <CIcon name="cil-ban" /> Reset
-              </CButton>
-            </CCardFooter>
-          </CForm>
-        </CCard>
-      </CCol>
-      <CCol md={4}>
-        <CCard>
-          <CCardBody className="text-center">
-            <CAlert color="success">Accepted</CAlert>
-            <CAlert color="danger">Declined</CAlert>
-            <CAlert color="warning">Pending</CAlert>
-            <CButton type="button" size="md" color="success">
-              Request Elevated Access
-            </CButton>
+          <CCardHeader>Profile</CCardHeader>
+          <CCardBody>
+            <Formik
+              initialValues={initialValues}
+              onSubmit={(values, { setSubmitting }) => {
+                axios.patch("/profile", values).then((data) => {
+                  console.log(data);
+                  setSubmitting(false);
+                });
+              }}
+              validationSchema={validationSchema}
+              enableReinitialize={true}
+            >
+              {(props) => (
+                <Form>
+                  <CustomInput label="Email" id="email" name="email" />
+                  <CustomInput
+                    label="Firstname"
+                    id="firstname"
+                    name="firstname"
+                  />
+                  <CustomInput label="Lastname" id="lastname" name="lastname" />
+                  <CustomInput
+                    label="Date of birth"
+                    id="dob"
+                    name="dob"
+                    type="date"
+                  />
+                  <CustomInput
+                    label="Phone Number"
+                    id="phonenumber"
+                    type="tel"
+                    name="phonenumber"
+                  />
+                  <CustomSelect
+                    label="Department"
+                    id="department_id"
+                    name="department_id"
+                    custom
+                    disabled={["MANAGER", "GENERAL"].indexOf(Role) !== -1}
+                  >
+                    <option value="">Choose a Department</option>
+                    {departments.map((d) => (
+                      <option key={d._id} value={d._id}>
+                        {d.name}
+                      </option>
+                    ))}
+                  </CustomSelect>
+                  <CustomSelect
+                    custom
+                    label="Role"
+                    id="role_id"
+                    name="role_id"
+                    disabled={["MANAGER", "GENERAL"].indexOf(Role) !== -1}
+                  >
+                    <option value="">Choose a Role</option>
+                    {roles.map((r) => (
+                      <option key={r._id} value={r._id}>
+                        {r.role}
+                      </option>
+                    ))}
+                  </CustomSelect>
+                  <CFormGroup>
+                    <CButton color="success" type="submit">
+                      {props.isSubmitting ? "Submitting..." : "Submit"}
+                    </CButton>{" "}
+                    &nbsp;
+                    <CButton color="danger" type="reset">
+                      Reset
+                    </CButton>
+                  </CFormGroup>
+                </Form>
+              )}
+            </Formik>
           </CCardBody>
+          <CCardFooter></CCardFooter>
         </CCard>
       </CCol>
+      {["MANAGER", "GENERAL"].indexOf(Role) !== -1 ? (
+        <CCol md={4}>
+          <CCard>
+            <CCardBody className="text-center">
+              {["GENERAL"].indexOf(Role) !== -1 ? (
+                <>
+                  <CAlert color="success">Accepted</CAlert>
+                  <CAlert color="danger">Declined</CAlert>
+                  <CAlert color="warning">Pending</CAlert>
+                </>
+              ) : (
+                <CButton type="button" size="md" color="success">
+                  Request Elevated Access
+                </CButton>
+              )}
+            </CCardBody>
+          </CCard>
+        </CCol>
+      ) : null}
     </CRow>
   );
 }
