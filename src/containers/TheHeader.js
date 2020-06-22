@@ -14,6 +14,7 @@ import CIcon from "@coreui/icons-react";
 import routes from "../routes";
 
 import { TheHeaderDropdown } from "./index";
+import LocalStorageService from "../_shared/services/LocalStorageService";
 
 const TheHeader = () => {
   const dispatch = useDispatch();
@@ -52,6 +53,7 @@ const TheHeader = () => {
       <CHeaderNav className="d-md-down-none mr-auto"></CHeaderNav>
 
       <CHeaderNav className="px-3">
+        Hi, {LocalStorageService.getValue("name")}
         <TheHeaderDropdown />
       </CHeaderNav>
 

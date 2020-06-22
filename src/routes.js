@@ -16,9 +16,26 @@ const routes = [
     name: "AccessRequests",
     component: AccessRequests,
   },
-  { path: "/profile", name: "Profile", component: Profile },
+  { path: "/profile", exact: true, name: "Profile", component: Profile },
+  {
+    path: "/profile/:id",
+    exact: true,
+    name: "Edit User Profile",
+    component: Profile,
+  },
   { path: "/users", exact: true, name: "Users", component: Users },
-  { path: "/users/:id", exact: true, name: "User Details", component: User },
+  {
+    path: "/users/create",
+    exact: true,
+    name: "Create User",
+    component: Profile,
+  },
+  {
+    path: "/users/:id",
+    exact: true,
+    name: "User Profile Details",
+    component: User,
+  },
 ];
 
 export default routes;

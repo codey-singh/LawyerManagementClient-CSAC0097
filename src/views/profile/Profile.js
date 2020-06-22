@@ -9,6 +9,7 @@ import {
   CCardFooter,
   CButton,
   CAlert,
+  CBadge,
 } from "@coreui/react";
 import { Formik, Form } from "formik";
 import * as yup from "yup";
@@ -16,6 +17,7 @@ import axios from "../../_shared/services/Axios";
 import AuthenticationService from "../../_shared/services/AuthenticationService";
 import CustomInput from "../../_shared/components/CustomInput";
 import CustomSelect from "../../_shared/components/CustomSelect";
+import { Redirect } from "react-router-dom";
 
 const validationSchema = yup.object({
   email: yup
@@ -40,11 +42,32 @@ const init = {
   role_id: "",
 };
 
-function Profile() {
+const getColor = (status) => {
+  switch (status) {
+    case "ACTIVE":
+      return "warning";
+    case "APPROVED":
+      return "success";
+    case "DECLINED":
+      return "danger";
+    default:
+      break;
+  }
+};
+
+function Profile({ match }) {
   const [initialValues, setInitialValues] = useState(init);
   const [departments, setdepartments] = useState([]);
   const [roles, setroles] = useState([]);
+  const [request, setRequest] = useState({});
+  const [redirect, setRedirect] = useState(false);
   const Role = AuthenticationService.getRole();
+
+  const handleRequestAccess = async () => {
+    const data = await axios.post("/accessrequests");
+    console.log(data.data);
+    setRequest(data.data);
+  };
 
   useEffect(() => {
     axios.get("/departments").then((data) => {
@@ -55,23 +78,37 @@ function Profile() {
       setroles(data.data);
     });
 
-    axios.get("/profile").then((data) => {
-      console.log(data);
-      let dataProfile = {
-        email: "",
-        firstname: "",
-        lastname: "",
-        dob: "",
-        phonenumber: "",
-        department_id: "",
-        role_id: "",
-        ...data.data,
-      };
-      setInitialValues(dataProfile);
+    axios.get("/accessrequests/my").then((data) => {
+      setRequest(data.data);
     });
-  }, []);
 
-  return (
+    let profileUrl = "/profile";
+    if (match.params.id) {
+      profileUrl = profileUrl + "/" + match.params.id;
+    }
+
+    if (match.path !== "/users/create") {
+      axios.get(profileUrl).then((data) => {
+        console.log(data);
+        let dataProfile = {
+          email: "",
+          firstname: "",
+          lastname: "",
+          dob: "",
+          phonenumber: "",
+          department_id: "",
+          role_id: "",
+          ...data.data,
+        };
+        if (dataProfile.department_id === null) dataProfile.department_id = "";
+        setInitialValues(dataProfile);
+      });
+    }
+  }, [match, match.params.id]);
+
+  return redirect ? (
+    <Redirect to="/users"></Redirect>
+  ) : (
     <CRow>
       <CCol md={8}>
         <CCard>
@@ -80,10 +117,23 @@ function Profile() {
             <Formik
               initialValues={initialValues}
               onSubmit={(values, { setSubmitting }) => {
-                axios.patch("/profile", values).then((data) => {
-                  console.log(data);
-                  setSubmitting(false);
-                });
+                let profileUrl = "/profile";
+                if (match.params.id) {
+                  profileUrl = profileUrl + "/" + match.params.id;
+                }
+
+                if (match.path !== "/users/create") {
+                  axios.patch(profileUrl, values).then((data) => {
+                    console.log(data);
+                    setSubmitting(false);
+                  });
+                } else {
+                  axios.post("/users", values).then((data) => {
+                    console.log(data);
+                    setSubmitting(false);
+                    setRedirect(true);
+                  });
+                }
               }}
               validationSchema={validationSchema}
               enableReinitialize={true}
@@ -157,14 +207,20 @@ function Profile() {
         <CCol md={4}>
           <CCard>
             <CCardBody className="text-center">
-              {["GENERAL"].indexOf(Role) !== -1 ? (
-                <>
-                  <CAlert color="success">Accepted</CAlert>
-                  <CAlert color="danger">Declined</CAlert>
-                  <CAlert color="warning">Pending</CAlert>
-                </>
+              {["GENERAL"].indexOf(Role) !== -1 && !!request ? (
+                <CAlert color={getColor(request.status)}>
+                  Your request staus is{" "}
+                  <CBadge color={getColor(request.status)}>
+                    {request.status}
+                  </CBadge>
+                </CAlert>
               ) : (
-                <CButton type="button" size="md" color="success">
+                <CButton
+                  type="button"
+                  size="md"
+                  onClick={handleRequestAccess}
+                  color="success"
+                >
                   Request Elevated Access
                 </CButton>
               )}
