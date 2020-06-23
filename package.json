@@ -18,6 +18,7 @@
     "core-js": "^3.6.5",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.2",
+    "express": "^4.17.1",
     "formik": "^2.1.4",
     "node-sass": "^4.14.1",
     "prop-types": "^15.7.2",
@@ -35,11 +36,11 @@
     "react-scripts": "^3.4.1"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "node server.js",
     "start.win": "set PORT=4200 set REACT_APP_API_URL=http://localhost:3000/api/v1 && react-scripts start",
     "start.dev": "PORT=4200 REACT_APP_API_URL=http://localhost:3000/api/v1 react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
+    "build": "REACT_APP_API_URL=https://lawyer-management-system.herokuapp.com/api/v1 react-scripts build",
+    "test": "REACT_APP_API_URL= https://lawyer-management-system.herokuapp.com/api/v1 react-scripts test",
     "test:cov": "npm test -- --coverage --watchAll=false",
     "test:debug": "react-scripts --inspect-brk test --runInBand",
     "eject": "react-scripts eject"

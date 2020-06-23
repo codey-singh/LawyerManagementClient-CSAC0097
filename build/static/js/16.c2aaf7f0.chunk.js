@@ -1,0 +1,2 @@
+(this.webpackJsonplmp=this.webpackJsonplmp||[]).push([[16],{1069:function(e,n,t){"use strict";t.r(n);var a=t(2),l=t.n(a),u=t(174);n.default=function(){var e=u.a.getValue("name");return l.a.createElement("h1",null,"Welcome, ",e)}}}]);
+//# sourceMappingURL=16.c2aaf7f0.chunk.js.map
