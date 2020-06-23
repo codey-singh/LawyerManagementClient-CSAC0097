@@ -203,7 +203,7 @@ function Profile({ match }) {
           <CCardFooter></CCardFooter>
         </CCard>
       </CCol>
-      {["MANAGER", "GENERAL"].indexOf(Role) !== -1 ? (
+      {["GENERAL"].indexOf(Role) !== -1 ? (
         <CCol md={4}>
           <CCard>
             <CCardBody className="text-center">

@@ -33,7 +33,7 @@ function getNav() {
         },
       ];
       break;
-    case "MANAGEMENT":
+    case "MANAGER":
       nav = [
         {
           _tag: "CSidebarNavItem",

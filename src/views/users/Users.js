@@ -4,6 +4,7 @@ import { CCard, CCardBody, CCol, CRow, CLink } from "@coreui/react";
 import DataTable from "react-data-table-component";
 import axios from "../../_shared/services/Axios";
 import CIcon from "@coreui/icons-react";
+import AuthenticationService from "../../_shared/services/AuthenticationService";
 
 const Users = () => {
   const columns = [
@@ -55,7 +56,7 @@ const Users = () => {
   const [loading, setLoading] = useState(false);
   const [totalRows, setTotalRows] = useState(0);
   const [perPage, setPerPage] = useState(10);
-
+  const role =  AuthenticationService.getRole();
   const fetchUsers = async (page) => {
     setLoading(true);
     const response = await axios.get(`/users?page=${page}&per_page=${perPage}`);
@@ -89,11 +90,13 @@ const Users = () => {
       <CCol xl={12}>
         <CCard>
           <CCardBody>
-            <div className="text-right">
+            {
+              ["ADMIN"].indexOf(role) !== -1 ? ( <div className="text-right">
               <CLink to="/users/create" className="btn btn-sm btn-primary">
                 <CIcon name="cil-user"></CIcon> Create User
               </CLink>
-            </div>
+            </div>) : null
+            }
             <DataTable
               columns={columns}
               data={data}
