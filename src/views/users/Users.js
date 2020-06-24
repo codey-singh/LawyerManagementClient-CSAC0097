@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from "react";
-import { CCard, CCardBody, CCol, CRow, CLink } from "@coreui/react";
+import { CCard, CCardBody, CCol, CRow, CLink, CForm, CFormGroup, CButton, CInput } from "@coreui/react";
 import DataTable from "react-data-table-component";
 import axios from "../../_shared/services/Axios";
 import CIcon from "@coreui/icons-react";
@@ -91,11 +91,22 @@ const Users = () => {
         <CCard>
           <CCardBody>
             {
-              ["ADMIN"].indexOf(role) !== -1 ? ( <div className="text-right">
-              <CLink to="/users/create" className="btn btn-sm btn-primary">
-                <CIcon name="cil-user"></CIcon> Create User
-              </CLink>
-            </div>) : null
+              ["ADMIN"].indexOf(role) !== -1 ? ( <CForm className="form-inline">
+              <CFormGroup className="form-group">
+                <CInput
+                  type="text"
+                  placeholder="Search Users"
+                  className="form-control-inline"
+                ></CInput>
+                <CButton className="btn btn-sm btn-primary">
+                  <CIcon name="cil-magnifying-glass"></CIcon>
+                </CButton>
+&nbsp;
+                <CLink to="/users/create" className="btn btn-sm btn-primary">
+                  <CIcon name="cil-user"></CIcon> Create User
+                </CLink>
+              </CFormGroup>
+            </CForm>) : null
             }
             <DataTable
               columns={columns}
