@@ -20,6 +20,7 @@
     "enzyme-adapter-react-16": "^1.15.2",
     "express": "^4.17.1",
     "formik": "^2.1.4",
+    "memoize-one": "^5.1.1",
     "node-sass": "^4.14.1",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",

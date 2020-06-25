@@ -1,10 +1,43 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from "react";
 import axios from "../../_shared/services/Axios";
-
+import memoize from "memoize-one";
 import DataTable from "react-data-table-component";
-import { CCard, CCardBody, CRow, CCol, CBadge } from "@coreui/react";
-
+import { CCard, CCardBody, CRow, CCol, CBadge, CButton } from "@coreui/react";
+const rowDisabledCriteria = (row) =>
+  ["APPROVED", "DECLINED"].indexOf(row.status) !== -1;
+const contextActions = memoize(
+  (selectedRows, approveSelected, declineSelected) => (
+    <>
+      <ContextButton
+        key="1"
+        text="Approve"
+        color="success"
+        selectedRows={selectedRows}
+        clickHandler={approveSelected}
+      />
+      <ContextButton
+        key="2"
+        text="Decline"
+        color="danger"
+        selectedRows={selectedRows}
+        clickHandler={declineSelected}
+      />
+    </>
+  )
+);
+const ContextButton = (props) => {
+  console.log(props);
+  return (
+    <CButton
+      className="ml-2"
+      color={props.color}
+      onClick={() => props.clickHandler(props.selectedRows)}
+    >
+      {props.text}
+    </CButton>
+  );
+};
 function AccessRequests() {
   const columns = [
     {
@@ -30,7 +63,6 @@ function AccessRequests() {
       ),
     },
   ];
-
   const getBadge = (status) => {
     switch (status) {
       case "ACTIVE":
@@ -43,12 +75,40 @@ function AccessRequests() {
         return "primary";
     }
   };
-
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [totalRows, setTotalRows] = useState(0);
   const [perPage, setPerPage] = useState(10);
-
+  const [selectedRows, setSelectedRows] = useState([]);
+  const [clearSelectedRows, setClearSelectedRows] = useState(false);
+  const approveSelected = async (selectedRows) => {
+    if (!!selectedRows) {
+      selectedRows = selectedRows.map((row) => ({
+        _id: row._id,
+        user: row.user._id,
+      }));
+      await axios.patch("/accessrequests", {
+        status: "APPROVED",
+        selectedRows,
+      });
+      setClearSelectedRows(!clearSelectedRows);
+      fetchRequests(1);
+    }
+  };
+  const declineSelected = async (selectedRows) => {
+    if (!!selectedRows) {
+      selectedRows = selectedRows.map((row) => ({
+        _id: row._id,
+        user: row.user._id,
+      }));
+      await axios.patch("/accessrequests", {
+        status: "DECLINED",
+        selectedRows,
+      });
+      setClearSelectedRows(!clearSelectedRows);
+      fetchRequests(1);
+    }
+  };
   const fetchRequests = async (page) => {
     setLoading(true);
     const response = await axios.get(
@@ -58,27 +118,21 @@ function AccessRequests() {
     setTotalRows(response.data.count);
     setLoading(false);
   };
-
   const handlePageChange = (page) => {
     fetchRequests(page);
   };
-
   const handlePerRowsChange = async (newPerPage, page) => {
     setLoading(true);
-
     const response = await axios.get(
       `/accessrequests?page=${page}&per_page=${newPerPage}`
     );
-
     setData(response.data.requests);
     setPerPage(newPerPage);
     setLoading(false);
   };
-
   useEffect(() => {
     fetchRequests(1);
   }, []);
-
   return (
     <CRow>
       <CCol xl={12}>
@@ -94,9 +148,19 @@ function AccessRequests() {
               paginationTotalRows={totalRows}
               selectableRows
               selectableRowsHighlight
+              contextActions={contextActions(
+                selectedRows,
+                approveSelected,
+                declineSelected
+              )}
+              onSelectedRowsChange={(props) =>
+                setSelectedRows(props.selectedRows)
+              }
               highlightOnHover
               onChangeRowsPerPage={handlePerRowsChange}
               onChangePage={handlePageChange}
+              selectableRowDisabled={rowDisabledCriteria}
+              clearSelectedRows={clearSelectedRows}
             ></DataTable>
           </CCardBody>
         </CCard>
@@ -104,5 +168,4 @@ function AccessRequests() {
     </CRow>
   );
 }
-
 export default AccessRequests;

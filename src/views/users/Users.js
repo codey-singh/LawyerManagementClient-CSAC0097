@@ -145,6 +145,7 @@ const Users = () => {
                     </div>
                     <div className="form-group mr-2">
                       <CSelect
+                        custom
                         name="dept"
                         id="dept"
                         value={department}
