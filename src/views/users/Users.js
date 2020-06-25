@@ -6,17 +6,29 @@ import {
   CCol,
   CRow,
   CLink,
-  CForm,
-  CFormGroup,
-  CButton,
-  CInput,
   CSelect,
   CLabel,
+  CInputGroup,
+  CInputGroupPrepend,
+  CInputGroupText,
 } from "@coreui/react";
 import DataTable from "react-data-table-component";
 import axios from "../../_shared/services/Axios";
 import CIcon from "@coreui/icons-react";
 import AuthenticationService from "../../_shared/services/AuthenticationService";
+
+const FilterComponent = ({ filterText, onFilter, className }) => (
+  <>
+    <input
+      id="search"
+      type="text"
+      className={className}
+      placeholder="Filter By Name"
+      value={filterText}
+      onChange={onFilter}
+    />
+  </>
+);
 
 const Users = () => {
   const columns = [
@@ -70,6 +82,13 @@ const Users = () => {
   const [perPage, setPerPage] = useState(10);
   const [departments, setDepartments] = useState([]);
   const [department, setDepartment] = useState("");
+  const [filterText, setFilterText] = React.useState("");
+  const filteredItems = data.filter(
+    (item) =>
+      item.firstname &&
+      item.firstname.toLowerCase().includes(filterText.toLowerCase())
+  );
+
   const role = AuthenticationService.getRole();
 
   const fetchUsers = async (page) => {
@@ -118,44 +137,60 @@ const Users = () => {
         <CCard>
           <CCardBody>
             {["ADMIN"].indexOf(role) !== -1 ? (
-              <CForm className="form-inline">
-                <CFormGroup className="form-group mr-2">
-                  <CLabel htmlFor="dept">Department</CLabel>
-                </CFormGroup>
-                <CFormGroup className="form-group mr-2">
-                  <CSelect
-                    name="dept"
-                    id="dept"
-                    value={department}
-                    onChange={handleDeptChange}
-                  >
-                    <option value="">ALL</option>
-                    {departments.map((dept) => (
-                      <option key={dept._id} value={dept._id}>
-                        {dept.name}
-                      </option>
-                    ))}
-                  </CSelect>
-                </CFormGroup>
-                <CFormGroup className="form-group mr-2">
-                  <CInput
-                    type="text"
-                    placeholder="Search Users"
-                    className="form-control-inline"
-                  ></CInput>
-                  <CButton className="btn btn-sm btn-primary">
-                    <CIcon name="cil-magnifying-glass"></CIcon>
-                  </CButton>
-                  &nbsp;
-                  <CLink to="/users/create" className="btn btn-sm btn-primary">
-                    <CIcon name="cil-user"></CIcon> Create User
-                  </CLink>
-                </CFormGroup>
-              </CForm>
+              <div className="row">
+                <div className="col-10">
+                  <div className="form-inline">
+                    <div className="form-group mr-2">
+                      <CLabel htmlFor="dept">Department</CLabel>
+                    </div>
+                    <div className="form-group mr-2">
+                      <CSelect
+                        name="dept"
+                        id="dept"
+                        value={department}
+                        onChange={handleDeptChange}
+                      >
+                        <option value="">All Departments</option>
+                        {departments.map((dept) => (
+                          <option key={dept._id} value={dept._id}>
+                            {dept.name}
+                          </option>
+                        ))}
+                      </CSelect>
+                    </div>
+                    <div className="form-group mr-2">
+                      <CInputGroup>
+                        <CInputGroupPrepend>
+                          <CInputGroupText>
+                            <CIcon name="cil-magnifying-glass" />
+                          </CInputGroupText>
+                        </CInputGroupPrepend>
+                        <FilterComponent
+                          type="text"
+                          placeholder="Search Users"
+                          className="form-control-inline"
+                          onFilter={(e) => setFilterText(e.target.value)}
+                          filterText={filterText}
+                        ></FilterComponent>
+                      </CInputGroup>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-2">
+                  <div className="float-right">
+                    <CLink
+                      to="/users/create"
+                      className="btn btn-sm btn-primary"
+                    >
+                      <CIcon name="cil-user"></CIcon> Create User
+                    </CLink>
+                  </div>
+                </div>
+              </div>
             ) : null}
             <DataTable
               columns={columns}
-              data={data}
+              data={filteredItems || data}
               title="Users"
               progressPending={loading}
               pagination
