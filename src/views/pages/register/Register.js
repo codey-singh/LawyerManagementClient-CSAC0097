@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import {
@@ -16,9 +16,11 @@ import {
   CInvalidFeedback,
   CAlert,
   CLink,
+  CFormGroup,
 } from "@coreui/react";
 import CIcon from "@coreui/icons-react";
 import axios from "../../../_shared/services/Axios";
+import { Redirect } from "react-router-dom";
 
 const initialValues = {
   email: "",
@@ -27,6 +29,7 @@ const initialValues = {
   firstname: "",
   lastname: "",
   dob: "",
+  captchaText: "",
 };
 
 const validationSchema = yup.object({
@@ -44,18 +47,39 @@ const validationSchema = yup.object({
   firstname: yup.string().required("Firstname is required"),
   lastname: yup.string().required("Lastname is required"),
   dob: yup.date("Not a valid date").required("DOB is required"),
+  captchaText: yup.string(),
 });
+
+const Captcha = (prop) => {
+  return <span dangerouslySetInnerHTML={{ __html: prop.svg }}></span>;
+};
 
 const Register = () => {
   const [registered, setRegistered] = useState(false);
+  const [error, setError] = useState(false);
+  const [captcha, setCaptcha] = useState("");
+  const [captchaRef, setCaptchaRef] = useState("");
+
+  useEffect(() => {
+    axios.get("/captcha").then((response) => {
+      setCaptcha(response.data.captcha);
+      console.log(response);
+      setCaptchaRef(response.data.captchaRef);
+    });
+  }, []);
 
   const onSubmit = (values) => {
     axios
-      .post("/auth/register", values)
+      .post("/auth/register", { ...values, captchaRef })
       .then((data) => {
-        setRegistered(true);
+        if (!data.data.error) {
+          setRegistered(true);
+        } else {
+          setError(true);
+        }
       })
       .catch((error) => {
+        setError(true);
         console.log(error);
       });
   };
@@ -66,7 +90,9 @@ const Register = () => {
     validationSchema,
   });
 
-  return (
+  return registered ? (
+    <Redirect to="/login" />
+  ) : (
     <div className="c-app c-default-layout flex-row align-items-center">
       <CContainer>
         <CRow className="justify-content-center">
@@ -78,6 +104,9 @@ const Register = () => {
                     Registered Successfully{" "}
                     <CLink to="/login">Go to Login page</CLink>
                   </CAlert>
+                ) : null}
+                {error ? (
+                  <CAlert color="danger">Captcha is not correct.</CAlert>
                 ) : null}
                 <CForm onSubmit={formik.handleSubmit}>
                   <h1>Register</h1>
@@ -203,6 +232,32 @@ const Register = () => {
                     />
                     {formik.touched.dob && formik.errors.dob ? (
                       <CInvalidFeedback>{formik.errors.dob}</CInvalidFeedback>
+                    ) : null}
+                  </CInputGroup>
+                  <CFormGroup>
+                    <Captcha svg={captcha} />
+                  </CFormGroup>
+                  <CInputGroup className="mb-3">
+                    <CInputGroupPrepend>
+                      <CInputGroupText>
+                        <CIcon name="cil-pencil" />
+                      </CInputGroupText>
+                    </CInputGroupPrepend>
+                    <CInput
+                      type="text"
+                      placeholder="Captcha text"
+                      autoComplete="captchaText"
+                      name="captchaText"
+                      {...formik.getFieldProps("captchaText")}
+                      invalid={
+                        formik.touched.captchaText &&
+                        !!formik.errors.captchaText
+                      }
+                    />
+                    {formik.touched.captchaText && formik.errors.captchaText ? (
+                      <CInvalidFeedback>
+                        {formik.errors.captchaText}
+                      </CInvalidFeedback>
                     ) : null}
                   </CInputGroup>
                   <CButton
