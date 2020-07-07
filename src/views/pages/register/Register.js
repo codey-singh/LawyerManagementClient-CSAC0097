@@ -21,7 +21,7 @@ import {
 import CIcon from "@coreui/icons-react";
 import axios from "../../../_shared/services/Axios";
 import { Redirect } from "react-router-dom";
-
+import CustomToast, { Toast } from "../../../_shared/components/CustomToast";
 const initialValues = {
   email: "",
   password: "",
@@ -56,7 +56,6 @@ const Captcha = (prop) => {
 
 const Register = () => {
   const [registered, setRegistered] = useState(false);
-  const [error, setError] = useState(false);
   const [captcha, setCaptcha] = useState("");
   const [captchaRef, setCaptchaRef] = useState("");
 
@@ -75,11 +74,10 @@ const Register = () => {
         if (!data.data.error) {
           setRegistered(true);
         } else {
-          setError(true);
+          Toast.error("Captcha is not correct.");
         }
       })
       .catch((error) => {
-        setError(true);
         console.log(error);
       });
   };
@@ -104,9 +102,6 @@ const Register = () => {
                     Registered Successfully{" "}
                     <CLink to="/login">Go to Login page</CLink>
                   </CAlert>
-                ) : null}
-                {error ? (
-                  <CAlert color="danger">Captcha is not correct.</CAlert>
                 ) : null}
                 <CForm onSubmit={formik.handleSubmit}>
                   <h1>Register</h1>
@@ -274,6 +269,7 @@ const Register = () => {
           </CCol>
         </CRow>
       </CContainer>
+      <CustomToast />
     </div>
   );
 };

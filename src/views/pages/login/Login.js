@@ -23,6 +23,7 @@ import {
 } from "@coreui/react";
 import CIcon from "@coreui/icons-react";
 import { Redirect } from "react-router-dom";
+import CustomToast, { Toast } from "../../../_shared/components/CustomToast";
 
 const initialValues = {
   username: "",
@@ -47,6 +48,7 @@ const Login = () => {
         setAuthenticated(true);
       })
       .catch((error) => {
+        Toast.error("Authentication Failure, Please check your credentials!");
         setAuthenticated(false);
       });
   };
@@ -144,6 +146,7 @@ const Login = () => {
           </CCol>
         </CRow>
       </CContainer>
+      <CustomToast />
     </div>
   );
 };

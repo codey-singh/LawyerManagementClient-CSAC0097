@@ -7,6 +7,9 @@ const AccessRequests = React.lazy(() =>
 );
 const Users = React.lazy(() => import("./views/users/Users"));
 const User = React.lazy(() => import("./views/users/User"));
+const ChangePassword = React.lazy(() =>
+  import("./views/change-password/ChangePassword")
+);
 
 const routes = [
   { path: "/", exact: true, name: "Home" },
@@ -35,6 +38,12 @@ const routes = [
     exact: true,
     name: "User Profile Details",
     component: User,
+  },
+  {
+    path: "/change-password",
+    exact: true,
+    name: "Change Password",
+    component: ChangePassword,
   },
 ];
 
