@@ -54,7 +54,6 @@ const TheHeader = () => {
 
       <CHeaderNav className="px-3">
         <span className="d-md-down-none">
-          {" "}
           Hi, {LocalStorageService.getValue("name")}
         </span>
         <TheHeaderDropdown />

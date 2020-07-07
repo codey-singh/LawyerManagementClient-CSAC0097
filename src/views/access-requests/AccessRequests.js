@@ -3,7 +3,9 @@ import React, { useState, useEffect } from "react";
 import axios from "../../_shared/services/Axios";
 import memoize from "memoize-one";
 import DataTable from "react-data-table-component";
-import { CCard, CCardBody, CRow, CCol, CBadge, CButton } from "@coreui/react";
+import { CCard, CCardBody, CRow, CCol, CBadge } from "@coreui/react";
+import ContextButton from "../../_shared/components/ContextButton";
+
 const rowDisabledCriteria = (row) =>
   ["APPROVED", "DECLINED"].indexOf(row.status) !== -1;
 const contextActions = memoize(
@@ -26,18 +28,7 @@ const contextActions = memoize(
     </>
   )
 );
-const ContextButton = (props) => {
-  console.log(props);
-  return (
-    <CButton
-      className="ml-2"
-      color={props.color}
-      onClick={() => props.clickHandler(props.selectedRows)}
-    >
-      {props.text}
-    </CButton>
-  );
-};
+
 function AccessRequests() {
   const columns = [
     {

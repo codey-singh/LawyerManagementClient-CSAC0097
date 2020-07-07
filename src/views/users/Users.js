@@ -17,6 +17,9 @@ import axios from "../../_shared/services/Axios";
 import CIcon from "@coreui/icons-react";
 import AuthenticationService from "../../_shared/services/AuthenticationService";
 
+import memoize from "memoize-one";
+import ContextButton from "../../_shared/components/ContextButton";
+
 const FilterComponent = ({ filterText, onFilter, className }) => (
   <>
     <input
@@ -29,6 +32,18 @@ const FilterComponent = ({ filterText, onFilter, className }) => (
     />
   </>
 );
+
+const contextActions = memoize((selectedRows, deleteSelected) => (
+  <>
+    <ContextButton
+      key="1"
+      text="Delete"
+      color="danger"
+      selectedRows={selectedRows}
+      clickHandler={deleteSelected}
+    />
+  </>
+));
 
 const Users = () => {
   const columns = [
@@ -88,8 +103,21 @@ const Users = () => {
       item.firstname &&
       item.firstname.toLowerCase().includes(filterText.toLowerCase())
   );
-
+  const [selectedRows, setSelectedRows] = useState([]);
+  const [clearSelectedRows, setClearSelectedRows] = useState(false);
   const role = AuthenticationService.getRole();
+
+  const deleteSelected = async (selectedRows) => {
+    let confirmation = window.confirm("Do you want to delete these user(s)?");
+    if (confirmation && !!selectedRows) {
+      selectedRows = selectedRows.map((row) => row._id);
+      await axios.delete(`/users/?_ids=${selectedRows.join()}`);
+      setClearSelectedRows(!clearSelectedRows);
+      fetchUsers(1);
+    } else {
+      setClearSelectedRows(!clearSelectedRows);
+    }
+  };
 
   const fetchUsers = async (page) => {
     setLoading(true);
@@ -136,59 +164,59 @@ const Users = () => {
       <CCol xl={12}>
         <CCard>
           <CCardBody>
-            {["ADMIN"].indexOf(role) !== -1 ? (
-              <div className="row">
-                <div className="col-10">
-                  <div className="form-inline">
-                    <div className="form-group mr-2">
-                      <CLabel htmlFor="dept">Department</CLabel>
-                    </div>
-                    <div className="form-group mr-2">
-                      <CSelect
-                        custom
-                        name="dept"
-                        id="dept"
-                        value={department}
-                        onChange={handleDeptChange}
-                      >
-                        <option value="">All Departments</option>
-                        {departments.map((dept) => (
-                          <option key={dept._id} value={dept._id}>
-                            {dept.name}
-                          </option>
-                        ))}
-                      </CSelect>
-                    </div>
-                    <div className="form-group mr-2">
-                      <CInputGroup>
-                        <CInputGroupPrepend>
-                          <CInputGroupText>
-                            <CIcon name="cil-magnifying-glass" />
-                          </CInputGroupText>
-                        </CInputGroupPrepend>
-                        <FilterComponent
-                          type="text"
-                          placeholder="Search Users"
-                          className="form-control-inline"
-                          onFilter={(e) => setFilterText(e.target.value)}
-                          filterText={filterText}
-                        ></FilterComponent>
-                      </CInputGroup>
-                    </div>
+            <div className="row">
+              <div className="col-10">
+                <div className="form-inline">
+                  <div className="form-group mr-2">
+                    <CLabel htmlFor="dept">Department</CLabel>
+                  </div>
+                  <div className="form-group mr-2">
+                    <CSelect
+                      custom
+                      name="dept"
+                      id="dept"
+                      value={department}
+                      onChange={handleDeptChange}
+                    >
+                      <option value="">All Departments</option>
+                      {departments.map((dept) => (
+                        <option key={dept._id} value={dept._id}>
+                          {dept.name}
+                        </option>
+                      ))}
+                    </CSelect>
+                  </div>
+                  <div className="form-group mr-2">
+                    <CInputGroup>
+                      <CInputGroupPrepend>
+                        <CInputGroupText>
+                          <CIcon name="cil-magnifying-glass" />
+                        </CInputGroupText>
+                      </CInputGroupPrepend>
+                      <FilterComponent
+                        type="text"
+                        placeholder="Search Users"
+                        className="form-control-inline"
+                        onFilter={(e) => setFilterText(e.target.value)}
+                        filterText={filterText}
+                      ></FilterComponent>
+                    </CInputGroup>
                   </div>
                 </div>
-                <div className="col-2">
-                  <div className="float-right">
+              </div>
+              <div className="col-2">
+                <div className="float-right">
+                  {["ADMIN"].indexOf(role) !== -1 ? (
                     <CLink
                       to="/users/create"
                       className="btn btn-sm btn-primary"
                     >
                       <CIcon name="cil-user"></CIcon> Create User
                     </CLink>
-                  </div>
+                  ) : null}
                 </div>
               </div>
-            ) : null}
+            </div>
             <DataTable
               columns={columns}
               data={filteredItems || data}
@@ -202,6 +230,15 @@ const Users = () => {
               selectableRows
               onChangeRowsPerPage={handlePerRowsChange}
               onChangePage={handlePageChange}
+              contextActions={
+                ["ADMIN"].indexOf(role) !== -1
+                  ? contextActions(selectedRows, deleteSelected)
+                  : null
+              }
+              onSelectedRowsChange={(props) =>
+                setSelectedRows(props.selectedRows)
+              }
+              clearSelectedRows={clearSelectedRows}
             ></DataTable>
           </CCardBody>
         </CCard>

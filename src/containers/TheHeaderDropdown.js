@@ -27,7 +27,7 @@ const TheHeaderDropdown = () => {
       <CDropdownToggle className="c-header-nav-link" caret={false}>
         <div className="c-avatar">
           <CImg
-            src={"avatars/6.jpg"}
+            src={"avatars/9.png"}
             className="c-avatar-img"
             alt="admin@bootstrapmaster.com"
           />
@@ -36,6 +36,18 @@ const TheHeaderDropdown = () => {
       <CDropdownMenu className="pt-0" placement="bottom-end">
         <CDropdownItem header tag="div" color="light" className="text-center">
           <strong>Account</strong>
+        </CDropdownItem>
+        <CDropdownItem to="/profile">
+          <CButton>
+            <CIcon name="cil-user" className="mfe-2" />
+            My Profile
+          </CButton>
+        </CDropdownItem>
+        <CDropdownItem to="/change-password">
+          <CButton>
+            <CIcon name="cil-settings" className="mfe-2" />
+            Change Password
+          </CButton>
         </CDropdownItem>
         <CDropdownItem>
           <CButton onClick={handleClick}>
