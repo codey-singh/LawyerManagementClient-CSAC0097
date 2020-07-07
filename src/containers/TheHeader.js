@@ -47,13 +47,16 @@ const TheHeader = () => {
         onClick={toggleSidebar}
       />
       <CHeaderBrand className="mx-auto d-lg-none" to="/">
-        <CIcon name="logo" height="48" alt="Logo" />
+        <CIcon name="logo" height={43} width={43} alt="Logo" />
       </CHeaderBrand>
 
       <CHeaderNav className="d-md-down-none mr-auto"></CHeaderNav>
 
       <CHeaderNav className="px-3">
-        Hi, {LocalStorageService.getValue("name")}
+        <span className="d-md-down-none">
+          {" "}
+          Hi, {LocalStorageService.getValue("name")}
+        </span>
         <TheHeaderDropdown />
       </CHeaderNav>
 
