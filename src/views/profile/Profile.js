@@ -18,6 +18,7 @@ import AuthenticationService from "../../_shared/services/AuthenticationService"
 import CustomInput from "../../_shared/components/CustomInput";
 import CustomSelect from "../../_shared/components/CustomSelect";
 import { Redirect } from "react-router-dom";
+import { Toast } from "../../_shared/components/CustomToast";
 
 const validationSchema = yup.object({
   email: yup
@@ -70,6 +71,7 @@ function Profile({ match }) {
   };
 
   useEffect(() => {
+    console.log(match);
     axios.get("/departments").then((data) => {
       setdepartments(data.data);
     });
@@ -123,16 +125,28 @@ function Profile({ match }) {
                 }
 
                 if (match.path !== "/users/create") {
-                  axios.patch(profileUrl, values).then((data) => {
-                    console.log(data);
-                    setSubmitting(false);
-                  });
+                  axios
+                    .patch(profileUrl, values)
+                    .then((data) => {
+                      console.log(data);
+                      let message =
+                        match.path === "/profile/:id"
+                          ? "User Saved"
+                          : "Profile Saved";
+                      Toast.success(message);
+                      setSubmitting(false);
+                    })
+                    .catch((err) => Toast.error(err));
                 } else {
-                  axios.post("/users", values).then((data) => {
-                    console.log(data);
-                    setSubmitting(false);
-                    setRedirect(true);
-                  });
+                  axios
+                    .post("/users", values)
+                    .then((data) => {
+                      console.log(data);
+                      Toast.success("User Created");
+                      setSubmitting(false);
+                      setRedirect(true);
+                    })
+                    .catch((err) => Toast.error(err));
                 }
               }}
               validationSchema={validationSchema}
