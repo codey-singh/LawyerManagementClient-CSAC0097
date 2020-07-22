@@ -10,6 +10,7 @@ import {
   CLink,
 } from "@coreui/react";
 import bhajan from "../../../assets/images/bhajan.jpg";
+import kiran from "../../../assets/images/kiran.jpg";
 import CIcon from "@coreui/icons-react";
 function About() {
   const devs = [
@@ -29,10 +30,10 @@ function About() {
     },
     {
       name: "Kiran Joseph",
-      github: "",
-      linkedin: "",
+      github: "https://github.com/kiranjm",
+      linkedin: "https://www.linkedin.com/in/kiranjosephmaliekal/",
       twitter: "",
-      imgName: "",
+      imgName: kiran,
     },
     {
       name: "Nandini",
