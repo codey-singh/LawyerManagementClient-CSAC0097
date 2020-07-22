@@ -131,12 +131,19 @@ const Login = () => {
                           Login
                         </CButton>
                       </CCol>
-                      <CCol xs="6" className="text-right">
+                      <CCol xs="6" className="text-right mb-4">
                         <CLink to="/register">
                           <CButton color="link" className="px-0">
                             Create Account
                           </CButton>
                         </CLink>
+                      </CCol>
+                    </CRow>
+                    <hr />
+                    <CRow>
+                      <CCol xs="12" className="text-center">
+                        &copy; LMP All rights reserved |{" "}
+                        <CLink to="/aboutus">About Team</CLink>
                       </CCol>
                     </CRow>
                   </CForm>
