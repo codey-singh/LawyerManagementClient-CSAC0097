@@ -11,6 +11,7 @@ import {
 } from "@coreui/react";
 import bhajan from "../../../assets/images/bhajan.jpg";
 import kiran from "../../../assets/images/kiran.jpg";
+import nandini from "../../../assets/images/nandini.jpg";
 import CIcon from "@coreui/icons-react";
 function About() {
   const devs = [
