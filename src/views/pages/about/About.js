@@ -84,9 +84,11 @@ function About() {
                             <CIcon name="cib-linkedin"></CIcon>
                           </CLink>
                           &nbsp;&nbsp;&nbsp;
-                          <CLink href={dev.twitter}>
-                            <CIcon name="cib-twitter"></CIcon>
-                          </CLink>
+                          {dev.twitter && (
+                            <CLink href={dev.twitter}>
+                              <CIcon name="cib-twitter"></CIcon>
+                            </CLink>
+                          )}
                         </div>
                       </CCol>
                     ))}
