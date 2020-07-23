@@ -12,6 +12,7 @@ import {
 import bhajan from "../../../assets/images/bhajan.jpg";
 import kiran from "../../../assets/images/kiran.jpg";
 import nandini from "../../../assets/images/nandini.jpg";
+import amritha from "../../../assets/images/amritha.jpg";
 import CIcon from "@coreui/icons-react";
 function About() {
   const devs = [
@@ -24,10 +25,10 @@ function About() {
     },
     {
       name: "Amritha Susan Jacob",
-      github: "",
-      linkedin: "",
-      twitter: "",
-      imgName: "",
+      github: "https://github.com/amrithasusanjacob",
+      linkedin: "https://www.linkedin.com/in/amritha-susan-jacob-94b75b12a/",
+      twitter: "https://twitter.com/SusanAmritha",
+      imgName: amritha,
     },
     {
       name: "Kiran Joseph",
