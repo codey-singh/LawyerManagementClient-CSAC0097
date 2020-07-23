@@ -36,10 +36,10 @@ function About() {
     },
     {
       name: "Nandini",
-      github: "",
-      linkedin: "",
-      twitter: "",
-      imgName: "",
+      github: "https://github.com/nandini1338",
+      linkedin: "https://www.linkedin.com/in/nandini-kanojia-814170187/",
+      twitter: "https://twitter.com/nandini962",
+      imgName: nandini,
     },
   ];
 
