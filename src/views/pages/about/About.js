@@ -9,11 +9,13 @@ import {
   CImg,
   CLink,
 } from "@coreui/react";
+import CIcon from "@coreui/icons-react";
+
 import bhajan from "../../../assets/images/bhajan.jpg";
 import kiran from "../../../assets/images/kiran.jpg";
 import nandini from "../../../assets/images/nandini.jpg";
 import amritha from "../../../assets/images/amritha.jpg";
-import CIcon from "@coreui/icons-react";
+
 function About() {
   const devs = [
     {
