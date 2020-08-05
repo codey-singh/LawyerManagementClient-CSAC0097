@@ -66,7 +66,7 @@ function About() {
                   <p>Meet our team</p>
                   <CRow>
                     {devs.map((dev) => (
-                      <CCol xs="3" className="text-center">
+                      <CCol xl="3" sm="6" xs="12" className="text-center">
                         <div className="dev">
                           <CImg
                             height="200"
@@ -76,7 +76,7 @@ function About() {
                           ></CImg>
                         </div>
                         <hr />
-                        <p>{dev.name}</p>
+                        <div>{dev.name}</div>
                         <div className="social">
                           <CLink href={dev.github}>
                             <CIcon name="cib-github"></CIcon>
