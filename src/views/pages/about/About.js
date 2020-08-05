@@ -65,8 +65,14 @@ function About() {
                   <h2 className="mb-4">Our Team</h2>
                   <p>Meet our team</p>
                   <CRow>
-                    {devs.map((dev) => (
-                      <CCol xl="3" sm="6" xs="12" className="text-center">
+                    {devs.map((dev, index) => (
+                      <CCol
+                        key={index}
+                        xl="3"
+                        sm="6"
+                        xs="12"
+                        className="text-center"
+                      >
                         <div className="dev">
                           <CImg
                             height="200"
