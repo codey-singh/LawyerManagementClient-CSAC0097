@@ -12,7 +12,8 @@ const loading = (
 // Containers
 const TheLayout = React.lazy(() => import("./containers/TheLayout"));
 
-// Pages
+// Pages - These are pages having a separate layout which can be accessed
+// if no user is logged in
 const Login = React.lazy(() => import("./views/pages/login/Login"));
 const Register = React.lazy(() => import("./views/pages/register/Register"));
 const Page404 = React.lazy(() => import("./views/pages/page404/Page404"));
