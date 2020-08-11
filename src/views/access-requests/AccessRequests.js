@@ -105,6 +105,7 @@ function AccessRequests() {
     const response = await axios.get(
       `/accessrequests?page=${page}&per_page=${perPage}`
     );
+    console.log(response.data);
     setData(response.data.requests);
     setTotalRows(response.data.count);
     setLoading(false);
@@ -117,6 +118,7 @@ function AccessRequests() {
     const response = await axios.get(
       `/accessrequests?page=${page}&per_page=${newPerPage}`
     );
+    console.log(response.data);
     setData(response.data.requests);
     setPerPage(newPerPage);
     setLoading(false);
