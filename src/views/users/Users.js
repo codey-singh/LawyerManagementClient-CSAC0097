@@ -83,7 +83,11 @@ const Users = () => {
             <CIcon size="sm" name="cil-user" /> View
           </CLink>
           &nbsp;
-          <CLink to={"/profile/" + row._id} className="btn btn-sm btn-warning">
+          <CLink
+            to={"/profile/" + row._id}
+            className="btn btn-sm btn-warning"
+            disabled={["GENERAL"].indexOf(row.role_id.role) === -1}
+          >
             <CIcon name="cil-pencil" /> Edit
           </CLink>
         </>

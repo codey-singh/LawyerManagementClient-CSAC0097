@@ -37,7 +37,7 @@ const User = ({ match }) => {
         role: role_id ? role_id.role : "",
       });
     });
-  }, [match.params.id]);
+  }, [match, match.params.id]);
 
   const userDetails = user
     ? Object.entries(user)
