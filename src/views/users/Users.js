@@ -86,7 +86,10 @@ const Users = () => {
           <CLink
             to={"/profile/" + row._id}
             className="btn btn-sm btn-warning"
-            disabled={["GENERAL"].indexOf(row.role_id.role) === -1}
+            disabled={
+              ["MANAGER"].indexOf(role) !== -1 &&
+              ["GENERAL"].indexOf(row.role_id.role) === -1
+            }
           >
             <CIcon name="cil-pencil" /> Edit
           </CLink>
