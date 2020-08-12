@@ -47,7 +47,7 @@ const validationSchema = yup.object({
   firstname: yup.string().required("Firstname is required"),
   lastname: yup.string().required("Lastname is required"),
   dob: yup.date("Not a valid date").required("DOB is required"),
-  captchaText: yup.string(),
+  captchaText: yup.string().required("Captcha is required"),
 });
 
 const Captcha = (prop) => {
