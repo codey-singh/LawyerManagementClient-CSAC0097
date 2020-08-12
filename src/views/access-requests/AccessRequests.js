@@ -39,12 +39,12 @@ function AccessRequests() {
     {
       name: "First Name",
       sortable: true,
-      cell: (row) => (row.user ? row.user.firstname : ""),
+      cell: (row) => (row.user ? row.user.firstname : "[deleted user]"),
     },
     {
       name: "Last Name",
       sortable: true,
-      cell: (row) => (row.user ? row.user.lastname : ""),
+      cell: (row) => (row.user ? row.user.lastname : "[deleted user]"),
     },
     {
       name: "Status",
