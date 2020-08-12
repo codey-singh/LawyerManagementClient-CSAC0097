@@ -38,13 +38,13 @@ function AccessRequests() {
     },
     {
       name: "First Name",
-      selector: "user.firstname",
       sortable: true,
+      cell: (row) => (row.user ? row.user.firstname : ""),
     },
     {
       name: "Last Name",
-      selector: "user.lastname",
       sortable: true,
+      cell: (row) => (row.user ? row.user.lastname : ""),
     },
     {
       name: "Status",
