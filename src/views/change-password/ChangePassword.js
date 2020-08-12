@@ -16,6 +16,7 @@ import CustomInput from "../../_shared/components/CustomInput";
 import AuthenticationService from "../../_shared/services/AuthenticationService";
 import LocalStorageService from "../../_shared/services/LocalStorageService";
 import { Redirect } from "react-router-dom";
+import { Toast } from "../../_shared/components/CustomToast";
 
 function ChangePassword() {
   const [isAuthenticated, setAuthenticated] = useState(
@@ -54,6 +55,9 @@ function ChangePassword() {
                   .patch("/users/change-password", values)
                   .then((response) => {
                     if (response.data.error) {
+                      Toast.error(
+                        "Your entered current password doesn't match with the one in our records. Please try again!"
+                      );
                       setSubmitting(false);
                     } else {
                       setSubmitting(false);
